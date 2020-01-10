@@ -8,3 +8,4 @@ edition = "2018"
 reqwest = "0.9.20"
 neovim-lib = "0.6.1"
 soup = "0.4.1"
+async-std = { version = "1.4.0", features = ["attributes"] }
