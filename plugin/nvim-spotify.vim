@@ -40,7 +40,8 @@ endfunction
 
 " Function reference in case of RPC start errors
 function! s:OnStderr(id, data, event) dict
-  echom 'stderr: ' . a:event . join(a:data, "\n") 
+  echom 'stderr: ' . a:event . join(a:data, "\n")
+  let s:spotifyjobid = jobstart([s:bin], { 'rpc': v:true, 'on_stderr': function('s:OnStderr') })
 endfunction
 
 " Start the RPC job and return the job  (channel) ID
