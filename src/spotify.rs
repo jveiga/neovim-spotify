@@ -1,10 +1,13 @@
+use std::process::Command;
+
 pub trait SpotifyAPI {
-    fn current_song(&self) -> String;
+    fn current_song(&self) -> Option<String>;
     fn play(&self);
     fn pause(&self);
     fn play_pause(&self);
     fn next(&self);
     fn previous(&self);
+    fn play_track(&self, track: &str);
 }
 
 pub struct Spotify;
@@ -24,13 +27,13 @@ pub struct SpotifyOSX;
 
 impl SpotifyOSX {
     pub fn new() -> SpotifyOSX {
-        SpotifyOSX {}
+        SpotifyOSX
     }
 }
 
 impl SpotifyAPI for SpotifyOSX {
     // Retrieve current song.
-    fn current_song(&self) -> String {
+    fn current_song(&self) -> Option<String> {
         let cmd = "
             tell application \"Spotify\"
     set currentArtist to artist of current track as string
@@ -72,17 +75,18 @@ end tell
         let cmd = "tell application \"Spotify\" to previous track";
         run_osascript(cmd);
     }
+
+    fn play_track(&self, track: &str) {
+        let cmd = format!("tell application \"Spotify\" to play track \"{}\"", track);
+        run_osascript(&cmd);
+    }
 }
 
 // Run an AppleScript command.
-fn run_osascript(script: &str) -> String {
-    use std::process::Command;
-
-    let output = Command::new("osascript")
-        .arg("-e")
-        .arg(script)
-        .output()
-        .unwrap();
-
-    std::str::from_utf8(&output.stdout[..]).unwrap().to_owned()
+fn run_osascript(script: &str) -> Option<String> {
+    if let Ok(output) = Command::new("osascript").arg("-e").arg(script).output() {
+        String::from_utf8(output.stdout).ok()
+    } else {
+        None
+    }
 }

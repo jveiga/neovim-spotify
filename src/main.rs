@@ -1,12 +1,12 @@
-extern crate neovim_lib;
-
 mod lyrics;
+mod messages;
 mod neovim;
 mod spotify;
 
-fn main() {
-    let mut nvim = neovim::EventHandler::new();
-
-    // Block
-    nvim.handle_events();
+#[async_std::main]
+async fn main() {
+    if let Some(mut nvim) = neovim::EventHandler::new() {
+        // Block
+        nvim.handle_events().await;
+    }
 }
