@@ -12,6 +12,7 @@ let s:bin = s:scriptdir . '/target/release/nvim-spotify'
 let s:CurrentSong = 'current_song'
 let s:PlayPause = 'play_pause'
 let s:Play = 'play'
+let s:PlayTrack = 'play_track'
 let s:Pause = 'pause'
 let s:Next = 'next'
 let s:Previous = 'previous'
@@ -61,6 +62,7 @@ function! s:AttachRPCHandlers(jobID)
   command! -nargs=0 SpotifyNext :call s:rpc(s:Next)
   command! -nargs=0 SpotifyPrevious :call s:rpc(s:Previous)
   command! -nargs=0 SpotifyLyrics :call s:rpc(s:Lyrics)
+  command! -nargs=1 SpotifyPlayTrack :call s:rpc(s:PlayTrack . " ". "<args>")
 endfunction
 
 " Send an RPC message to the remote process.
